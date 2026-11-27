@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - github-pages-futbolpodnyam.zip
+      - github-pages-futbolpodnyam-20261127-expanded.zip
       - .github/workflows/deploy.yml
   workflow_dispatch:
 
@@ -23,11 +23,11 @@ jobs:
           persist-credentials: false
       - name: Extract static site
         run: |
-          unzip -q github-pages-futbolpodnyam.zip -d site
+          unzip -q github-pages-futbolpodnyam-20261127-expanded.zip -d site
           test -f site/index.html
           test -f site/sitemap.xml
           test -f site/robots.txt
-          printf '%s\n' 'google-site-verification: google7ed8387b7a510789.html' > site/google7ed8387b7a510789.html
+          test -f site/google7ed8387b7a510789.html
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site
