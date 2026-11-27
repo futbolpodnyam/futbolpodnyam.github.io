@@ -1,0 +1,46 @@
+name: Publish site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - github-pages-futbolpodnyam.zip
+      - .github/workflows/deploy.yml
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Extract static site
+        run: |
+          unzip -q github-pages-futbolpodnyam.zip -d site
+          test -f site/index.html
+          test -f site/sitemap.xml
+          test -f site/robots.txt
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
